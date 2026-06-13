@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Заявка в BioForge Community</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body {
+      margin: 0;
+      background: #ffffff;
+      font-family: system-ui, sans-serif;
+      color: #111;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 600px;
+      background: #fff;
+      border-radius: 16px;
+      padding: 24px;
+      border: 2px solid #22c55e;
+    }
+
+    h1 {
+      margin-top: 0;
+      font-size: 28px;
+      color: #16a34a;
+    }
+
+    label {
+      font-size: 14px;
+      margin-bottom: 4px;
+      display: block;
+      font-weight: 500;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      margin-bottom: 14px;
+      font-size: 14px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      background: #22c55e;
+      color: #fff;
+      font-size: 16px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    button:hover {
+      background: #16a34a;
+    }
+
+    #status {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #444;
+    }
+
+    #status.error {
+      color: #d00;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Заявка в BioForge</h1>
+
+    <form id="bioforge-form">
+      <label>Имя / ник *</label>
+      <input type="text" name="name" required placeholder="Например: Даниил">
+
+      <label>Возраст *</label>
+      <input type="number" name="age" required min="12" max="99">
+
+      <label>Контакт для связи *</label>
+      <input type="text" name="contact" required placeholder="@telegram, VK, email">
+
+      <label>Город / часовой пояс</label>
+      <input type="text" name="city" placeholder="Например: Усть-Каменогорск">
+
+      <label>Чем тебе интересен BioForge? *</label>
+      <textarea name="focus" required placeholder="Микробиология, биопестициды, эксперименты..."></textarea>
+
+      <button type="submit">Отправить заявку</button>
+
+      <div id="status">Готово к отправке.</div>
+    </form>
+  </div>
+
+  <!-- EmailJS -->
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+  <script>
+    (function() {
+      emailjs.init("DhUolf38ezXhcaUkC"); // твой Public Key
+    })();
+
+    const form = document.getElementById("bioforge-form");
+    const statusEl = document.getElementById("status");
+
+    form.addEventListener("submit", function(e) {
+      e.preventDefault();
+
+    const data = {
+      name: form.name.value,
+      age: form.age.value,
+      contact: form.contact.value,
+      city: form.city.value,
+      focus: form.focus.value
+    };
+
+
+    emailjs.send("service_wca0gi9", "template_t7muufg", data)
+        .then(() => {
+          statusEl.textContent = "Заявка успешно отправлена!";
+          statusEl.classList.remove("error");
+          form.reset();
+        })
+        .catch((err) => {
+          statusEl.textContent = "Ошибка отправки. Проверь EmailJS.";
+          statusEl.classList.add("error");
+          console.error(err);
+        });
+    });
+  </script>
+
+</body>
+</html>
